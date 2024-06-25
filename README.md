@@ -1,2 +1,26 @@
 # Python-Course-Design-LeNet-5
-This is a Python course design created by Kaige Zheng
+
+## 运行环境
+
+### 硬件
+
++ `CPU`:AMD Ryzen 7 5800H with Radeon Graphics 3.20 GHz
+
+### 软件
+
++ `OS`:(WSL2)Linux Ubuntu 22.04.2 LTS
+
++ `Compiler`:Python 3.7.16
+
++ `Other Environment`:Anaconda<conda(23.3.1) notebook(6.5.6)> cuda:12.0
+
++ ## 文件说明
+
++ Course-Design/
+
+```
+|  DataloadFasionMNIST.ipynb
+|  LeNet.ipynb
+├─ MODULE/
+│    ├─ DataloadFasionMNIST.py
+```
