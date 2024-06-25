@@ -14,11 +14,20 @@
 
 + `Other Environment`:Anaconda<conda(23.3.1) notebook(6.5.6)> cuda:12.0
 
+### 所需的包
+
++ torch (recommend version:1.12.1)
+
++ torchvision (recommend version:0.13.1)
+
++ matplotlib (recommend version:3.5.1)
+
++ time
+
 + ## 文件说明
 
-+ Course-Design/
-
 ```
+main/
 |  DataloadFasionMNIST.ipynb
 |  LeNet.ipynb
 ├─ MODULE/
