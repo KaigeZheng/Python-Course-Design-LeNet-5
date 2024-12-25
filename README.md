@@ -12,26 +12,35 @@
 
 + `OS`:(WSL2)Linux Ubuntu 22.04.2 LTS
 
-+ `Compiler`:Python 3.7.16
++ `Compiler`:Python 3.11
 
-+ `Other Environment`:Anaconda<conda(23.3.1) notebook(6.5.6)> cuda:12.0
-
-### 所需的包
-
-+ torch (recommend version:1.12.1)
-
-+ torchvision (recommend version:0.13.1)
-
-+ matplotlib (recommend version:3.5.1)
-
-+ time
++ `cuda`:12.2
 
 + ## 文件说明
 
 ```
 main/
-|  DataloadFasionMNIST.ipynb
-|  LeNet.ipynb
-├─ MODULE/
-│    ├─ DataloadFasionMNIST.py
+│  AlexNet-better.py
+│  AlexNet.ipynb
+│  AlexNet.py
+│  DataloadFasionMNIST.ipynb
+│  LeNet-better.py
+│  LeNet.ipynb
+│  LeNet.py
+│  README.md
+│
+├─logfile
+│      log-AlexNet-baseline
+│      log-AlexNet-better
+│      log-LeNet-baseline
+│      log-LeNet-better
+│
+├─MODULE
+│      DataloadFasionMNIST.py
+│
+└─outputfile
+        AlexNet-better.png
+        AlexNet.png
+        LeNet-better.png
+        LeNet.png
 ```
