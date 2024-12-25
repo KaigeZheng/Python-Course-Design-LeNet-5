@@ -4,56 +4,47 @@ import time
 import matplotlib.pyplot as plt
 from MODULE import DataloadFasionMNIST as dl
 
-net = nn.Sequential(
-    # 这里使用一个11*11的更大窗口来捕捉对象。
-    # 同时，步幅为4，以减少输出的高度和宽度。
-    # 另外，输出通道的数目远大于LeNet
-    nn.Conv2d(1, 96, kernel_size=11, stride=4, padding=1), nn.ReLU(),
-    nn.MaxPool2d(kernel_size=3, stride=2),
-    # 减小卷积窗口，使用填充为2来使得输入与输出的高和宽一致，且增大输出通道数
-    nn.Conv2d(96, 256, kernel_size=5, padding=2), nn.ReLU(),
-    nn.MaxPool2d(kernel_size=3, stride=2),
-    # 使用三个连续的卷积层和较小的卷积窗口。
-    # 除了最后的卷积层，输出通道的数量进一步增加。
-    # 在前两个卷积层之后，汇聚层不用于减少输入的高度和宽度
-    nn.Conv2d(256, 384, kernel_size=3, padding=1), nn.ReLU(),
-    nn.Conv2d(384, 384, kernel_size=3, padding=1), nn.ReLU(),
-    nn.Conv2d(384, 256, kernel_size=3, padding=1), nn.ReLU(),
-    nn.MaxPool2d(kernel_size=3, stride=2),
-    nn.Flatten(),
-    # 这里，全连接层的输出数量是LeNet中的好几倍。使用dropout层来减轻过拟合
-    nn.Linear(6400, 4096), nn.ReLU(),
-    nn.Dropout(p=0.5),
-    nn.Linear(4096, 4096), nn.ReLU(),
-    nn.Dropout(p=0.5),
-    # 最后是输出层。由于这里使用Fashion-MNIST，所以用类别数为10，而非论文中的1000
-    nn.Linear(4096, 10))
+class Reshape(torch.nn.Module):
+    def forward(self, x):
+        return x.view(-1, 1, 28, 28)
+    
+net = torch.nn.Sequential(Reshape(), 
+                          nn.Conv2d(1, 6, kernel_size=5,padding=2), nn.Sigmoid(),nn.AvgPool2d(kernel_size=2, stride=2),
+                          nn.Conv2d(6, 16, kernel_size=5), nn.Sigmoid(),nn.AvgPool2d(kernel_size=2, stride=2), 
+                          nn.Flatten(),
+                          nn.Linear(16 * 5 * 5, 120), nn.Sigmoid(),
+                          nn.Linear(120, 84), nn.Sigmoid(), 
+                          nn.Linear(84, 10))
 
-batch_size = 128
-train_iter, test_iter = dl.load_dataset(batch_size, resize=224)
+batch_size = 256
+train_iter, test_iter = dl.load_dataset(batch_size)
 
-def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
+def train_LeNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # 初始化权重
     def init_weights(m):
         if type(m) == nn.Linear or type(m) == nn.Conv2d:
             nn.init.xavier_uniform_(m.weight)
     net.apply(init_weights)
     
-    print('Training on', device)
+    print('training on', device)
     net.to(device)
     
-    # 优化器 -> SGD
-    optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
+    # 优化器 -> Adam
+    optimizer = optim.Adam(net.parameters(), lr=lr)
+
+    # 学习率调度器
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     
     # 损失函数 -> 交叉熵
-    loss_fn = nn.CrossEntropyLoss()
+    loss = nn.CrossEntropyLoss()
     
     # 记录每个epoch的损失和准确率
     train_losses = []
     train_accuracies = []
     test_accuracies = []
     
-    # 开始训练
+    # 开始迭代
     for epoch in range(num_epochs):
         net.train()
         train_loss, train_acc, num_examples = 0.0, 0.0, 0
@@ -64,7 +55,7 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
             optimizer.zero_grad()
             X, y = X.to(device), y.to(device)
             y_hat = net(X)
-            l = loss_fn(y_hat, y)
+            l = loss(y_hat, y)
             l.backward()
             optimizer.step()
             
@@ -95,6 +86,7 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
               f'loss {train_loss:.3f}, train acc {train_acc:.3f}, '
               f'test acc {test_acc:.3f}, '
               f'time {(end_time - start_time):.2f} sec')
+        scheduler.step()
     
     print('Training complete')
     
@@ -115,11 +107,13 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
     plt.title('Training Loss and Accuracy')
     plt.legend()
     plt.grid()
-    save_path = "./AlexNet.png"
+    save_path = "./LeNet-better.png"
     if save_path:
         plt.savefig(save_path)
         print(f'Plot saved to {save_path}')
     plt.show()
 
-lr,epochs = 0.01, 100
-train_AlexNet(net, train_iter, test_iter, epochs, lr)
+# baseline
+epochs = 100
+lr = 0.01
+train_LeNet(net, train_iter, test_iter, epochs, lr)

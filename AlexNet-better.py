@@ -42,8 +42,11 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
     print('Training on', device)
     net.to(device)
     
-    # 优化器 -> SGD
-    optimizer = optim.SGD(net.parameters(), lr=lr, momentum=0.9)
+    # 优化器 -> Adam
+    optimizer = optim.Adam(net.parameters(), lr=lr)
+
+    # 学习率调度器
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
     
     # 损失函数 -> 交叉熵
     loss_fn = nn.CrossEntropyLoss()
@@ -95,6 +98,8 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
               f'loss {train_loss:.3f}, train acc {train_acc:.3f}, '
               f'test acc {test_acc:.3f}, '
               f'time {(end_time - start_time):.2f} sec')
+        
+        scheduler.step()
     
     print('Training complete')
     
@@ -115,11 +120,11 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
     plt.title('Training Loss and Accuracy')
     plt.legend()
     plt.grid()
-    save_path = "./AlexNet.png"
+    save_path = "./AlexNet-better.png"
     if save_path:
         plt.savefig(save_path)
         print(f'Plot saved to {save_path}')
     plt.show()
 
-lr,epochs = 0.01, 100
+lr,epochs = 0.001, 100
 train_AlexNet(net, train_iter, test_iter, epochs, lr)
