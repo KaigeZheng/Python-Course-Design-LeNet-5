@@ -4,7 +4,9 @@
 
 ### 硬件
 
-+ `CPU`:AMD Ryzen 7 5800H with Radeon Graphics 3.20 GHz
++ `CPU`:Intel(R) Xeon(R) Silver 4110 CPU @ 2.10GHz
+
++ `GPU`:Nvidia Tesla V100-PCIE 32GB
 
 ### 软件
 
