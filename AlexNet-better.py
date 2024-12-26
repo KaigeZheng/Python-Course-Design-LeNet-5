@@ -36,7 +36,7 @@ def train_AlexNet(net, train_iter, test_iter, num_epochs, lr, device='cuda'):
     # 初始化权重
     def init_weights(m):
         if type(m) == nn.Linear or type(m) == nn.Conv2d:
-            nn.init.xavier_uniform_(m.weight)
+            nn.init.kaiming_uniform_(m.weight)
     net.apply(init_weights)
     
     print('Training on', device)
