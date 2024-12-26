@@ -16,7 +16,7 @@
 
 + `cuda`:12.2
 
-+ ## 文件说明
+## 文件说明
 
 ```
 main/
@@ -43,4 +43,18 @@ main/
         AlexNet.png
         LeNet-better.png
         LeNet.png
+```
+
+## 运行方法（Linux）
+
+在线运行
+
+```bash
+python AlexNet-better.py > ./logfile/log-AlexNet-better
+```
+
+离线运行
+
+```bash
+nohup python AlexNet-better.py > ./logfile/log-AlexNet-better &
 ```
