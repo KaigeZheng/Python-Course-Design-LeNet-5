@@ -1,4 +1,4 @@
-# Python-Course-Design-LeNet-5
+# Optimization-on-LeNet-and-AlexNet
 
 ## 运行环境
 
